@@ -1,0 +1,9 @@
+{
+    "manifest_version": 3,
+    "name": "SpotifyTogether",
+    "description": "Synchronize spotify sessions.",
+    "version": "1.0",
+    "action": {
+        "default_popup": "./public/popup.html"
+    }
+}

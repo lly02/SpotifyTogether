@@ -1,4 +1,4 @@
-import * as codeVerifier from "./codeVerifier.js"
+import * as codeVerifier from "./codeVerifier.ts"
 
 const CLIENT_ID = "22e1420d4e9743bab929b848c5e1bdc9";
 const REDIRECT_URL = 'http://localhost:8080';

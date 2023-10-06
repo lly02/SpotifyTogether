@@ -4,6 +4,10 @@
     "description": "Synchronize spotify sessions.",
     "version": "1.0",
     "action": {
-        "default_popup": "./public/popup.html"
+        "default_popup": "./public/index.html"
+    },
+    "background": {
+        "service_worker": "service-worker.js",
+        "type": "module"
     }
 }

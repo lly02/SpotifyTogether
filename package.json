@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ",
-    "build-copy-src": "babel src -d dist/src --presets @babel/preset-typescript --extensions .ts --minified -D --source-maps inline",
-    "build-copy-public": "babel public -d dist/public -D --minified -w --source-maps inline",
-    "build-copy-root": "babel manifest.json -d dist -D --minified -w --source-maps inline",
+    "build-copy-src": "babel src -d dist --presets @babel/preset-typescript --extensions .ts --delete-dir-on-start --minified -D --source-maps inline",
     "build": "concurrently --kill-others \"npm:build-*\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

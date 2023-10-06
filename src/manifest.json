@@ -6,6 +6,9 @@
     "action": {
         "default_popup": "./public/index.html"
     },
+    "permissions": [
+        "storage"
+    ],
     "background": {
         "service_worker": "service-worker.js",
         "type": "module"

@@ -1,26 +1,33 @@
-import * as codeVerifier from "./codeVerifier.js"
+import * as codeVerifier from "./helper/codeVerifier.js"
+import * as chromeAPI from "./helper/chromeAPI.js"
 
 const CLIENT_ID = "22e1420d4e9743bab929b848c5e1bdc9";
 const REDIRECT_URL = 'http://localhost:8080';
 
-export default class client {
-    static instance: client = new client();
+export default class Client {
+    private static instance: Client;
+    
+    private constructor() {}
 
-    static getInstance(): client {
-        return client.instance;
+    public static getInstance(): Client {
+        if (!Client.instance) {
+            Client.instance = new Client();
+        }
+
+        return Client.instance;
     }
 
-    host(): void {
+    public async host(): Promise<void> {
         const randomString = codeVerifier.generateRandomString(128);
 
-        codeVerifier.generateCodeChallenge(randomString)
+        const tab = await codeVerifier.generateCodeChallenge(randomString)
             .then(codeChallenge => {
-                let state = codeVerifier.generateRandomString(16);
-                let scope = 'user-read-private user-read-email';
+                const state = codeVerifier.generateRandomString(16);
+                const scope = 'user-read-private user-read-email';
 
-                localStorage.setItem('code_verifier', randomString);
+                chromeAPI.storeLocal('code_verifier', randomString);
 
-                let args = new URLSearchParams({
+                const args = new URLSearchParams({
                     response_type: 'code',
                     client_id: CLIENT_ID,
                     scope: scope,
@@ -29,8 +36,8 @@ export default class client {
                     code_challenge_method: 'S256',
                     code_challenge: codeChallenge
                 });
-
-                window.location.href = 'https://accounts.spotify.com/authorize?' + args;
+                
+                return chromeAPI.newTab('https://accounts.spotify.com/authorize?' + args);
             });
     }
 }

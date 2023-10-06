@@ -1,9 +1,9 @@
-import client from "./scripts/client.js";
+import Client from "./scripts/client.js";
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+const CLIENT = Client.getInstance();
+
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message === "host") {
-    //   const CLIENT = client.getInstance();
-    //   CLIENT.host();
-        sendResponse("hi");
+        CLIENT.host();
     };
 });

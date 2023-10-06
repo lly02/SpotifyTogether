@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "types": [
+      "chrome"
+    ],
     "allowImportingTsExtensions": true,
     /* Basic Options */
     "target": "es6",

@@ -7,6 +7,10 @@ export async function newTab(url: string): Promise<chrome.tabs.Tab> {
         .catch( e => e);
 }
 
+export async function closeTab(tab: chrome.tabs.Tab): Promise<void> {
+    return chrome.tabs.remove(tab.id!);
+}
+
 export async function listenTabURLUpdate(tab: chrome.tabs.Tab, uri: string): Promise<string> {
     return new Promise( resolve => {
         const callback = ( listenerTabId: number, changeInfo: chrome.tabs.TabChangeInfo, listenerTab: chrome.tabs.Tab) => {

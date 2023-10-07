@@ -19,6 +19,7 @@ export default class Client {
 
     public async host(): Promise<void> {
         const randomString = codeVerifier.generateRandomString(128);
+        let oauthtab: chrome.tabs.Tab;
 
         await codeVerifier.generateCodeChallenge(randomString)
             .then(codeChallenge => {
@@ -39,14 +40,18 @@ export default class Client {
                 
                 return chromeAPI.newTab("https://accounts.spotify.com/authorize?" + args);
             })
-            .then( OAuthTab => chromeAPI.listenTabURLUpdate(OAuthTab, REDIRECT_URI))
+            .then( OAuthTab => {
+                oauthtab = OAuthTab;
+                return chromeAPI.listenTabURLUpdate(OAuthTab, REDIRECT_URI)
+            })
             .then( OAuthCallbackURI => {
                 const OAuthURI = new URL(OAuthCallbackURI);
-                const urlParams = new URLSearchParams(OAuthURI.search   );
+                const urlParams = new URLSearchParams(OAuthURI.search);
                 const code = urlParams.get("code");
                 chromeAPI.storeLocal("code", code!);
-                return chromeAPI.getLocal("code");
+                return 
             })
+            .then ( () => chromeAPI.closeTab(oauthtab))
             .catch( e => Promise.reject(e));
     }
 }

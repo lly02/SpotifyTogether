@@ -18,6 +18,7 @@
     "@babel/preset-env": "^7.22.20",
     "@babel/preset-typescript": "^7.23.0",
     "@types/chrome": "^0.0.246",
+    "@types/webrtc": "^0.0.37",
     "concurrently": "^8.2.1",
     "typescript": "^5.2.2"
   }

@@ -4,4 +4,4 @@ hostButton.addEventListener("click", () => {
     chrome.runtime.sendMessage("host", res => {
         
     });
-})
+});

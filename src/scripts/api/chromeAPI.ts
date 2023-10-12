@@ -37,3 +37,8 @@ export async function storeLocal(key: string, value: string): Promise<void> {
 export async function getLocal(key: string): Promise<{ [key: string]: any }> {
     return chrome.storage.local.get(key);
 }
+
+// CHROME.RUNTIME
+export async function sendMessage(message: string): Promise<void> {
+    return chrome.runtime.sendMessage(message);
+}

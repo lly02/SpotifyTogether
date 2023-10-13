@@ -12,5 +12,7 @@ async function messageHandler(message, sender, sendResponse) {
     switch (message) {
         case "newPeer":
             return await PEER.createPeer();
+        case "keepAlive":
+            return "keepAlive";
     };
 }

@@ -3,19 +3,18 @@ import Client from "./scripts/client.js";
 const CLIENT = Client.getInstance();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message === "host") {
-        host(message, sender, sendResponse);
+    try {
+        messageHandler(message, sender, sendResponse)
+            .then(sendResponse);
         return true;
-    };
+    } catch (e) {
+        console.log(e);
+    }
 });
 
-const host = async (message, sender, sendResponse) => {
-    try {
-        await CLIENT.host();
-        console.log("Hosted");
-        sendResponse("success");
-    } catch (e) {
-        console.error(e);
-        sendResponse("error");
-    }
+async function messageHandler(message, sender, sendResponse) {
+    switch (message) {
+        case "host":
+            return await CLIENT.host();
+    };
 }

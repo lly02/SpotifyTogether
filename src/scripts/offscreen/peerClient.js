@@ -1,4 +1,5 @@
 export default class PeerClient {
+    id;
     peer;
     connections = {};
 
@@ -16,6 +17,7 @@ export default class PeerClient {
         return new Promise( (resolve, error) => {
             this.peer = new Peer();
             this.peer.on("open", (id) => {
+                this.id = id;
                 console.log(`Your peer connection has been established with ID: ${id}`);
                 resolve(id);
             });

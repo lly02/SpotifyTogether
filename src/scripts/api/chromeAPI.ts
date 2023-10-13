@@ -33,7 +33,6 @@ export async function storeLocal(key: string, value: string): Promise<void> {
         .catch( e => e);
 }
 
-
 export async function getLocal(key: string): Promise<{ [key: string]: any }> {
     return chrome.storage.local.get(key);
 }

@@ -39,6 +39,15 @@ export async function getLocal(key: string): Promise<{ [key: string]: any }> {
 }
 
 // CHROME.RUNTIME
-export async function sendMessage(message: string): Promise<void> {
+export async function sendMessage(message: string): Promise<any> {
     return chrome.runtime.sendMessage(message);
+}
+
+// CHROME.OFFSCREEN
+export async function createPeerJSOffscreen(): Promise<void> {
+    return chrome.offscreen.createDocument({
+        url: "scripts/offscreen/offscreen.html",
+        reasons: [chrome.offscreen.Reason.WEB_RTC],
+        justification: "Require access to window object for WEBRTC."
+    })
 }

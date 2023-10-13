@@ -1,5 +1,5 @@
 import { OAuthAuthorize } from "./api/spotifyAPI.js";
-import PeerClient from "./server/peerClient.js";
+import { createPeerJSOffscreen, sendMessage } from "./api/chromeAPI.js";
 
 export default class Client {
     private static instance: Client;
@@ -15,11 +15,13 @@ export default class Client {
     }
 
     public async host(): Promise<void> {
+        console.log("Creating offscreen");
+        await createPeerJSOffscreen();
+
         console.log("Begin OAuth authorization");
         await OAuthAuthorize();
 
         console.log("Hosting peer connection");
-        const peerObj = PeerClient.getInstance();
-        const peerID = await peerObj.createPeer();
+        const peerID = await sendMessage("newPeer");
     }
 }

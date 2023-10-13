@@ -1,5 +1,3 @@
-import "../module/peerjs/peerjs.min.js";
-
 export default class PeerClient {
     peer;
     connections = {};
@@ -16,7 +14,7 @@ export default class PeerClient {
 
     async createPeer() {
         return new Promise( (resolve, error) => {
-            this.peer = new chrome.windows.Peer();
+            this.peer = new Peer();
             this.peer.on("open", (id) => {
                 console.log(`Your peer connection has been established with ID: ${id}`);
                 resolve(id);

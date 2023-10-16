@@ -1,10 +1,9 @@
 import { OAuthAuthorize } from "./api/spotifyAPI.js";
 import * as chromeAPI from "./api/chromeAPI.js";
-import PeerClient from "./offscreen/peerClient.js";
 
 export default class Client {
     private static instance: Client;
-    private _peerClient?: PeerClient;
+    private _keepAliveId?: number;
     
     private constructor() {}
 
@@ -24,24 +23,32 @@ export default class Client {
         await OAuthAuthorize();
 
         console.log("Hosting peer connection");
-        this._peerClient = await PeerClient.getInstance();
-        const peerId = await chromeAPI.sendMessage("newPeer");
+        const newPeer = await chromeAPI.sendMessage({
+            target: "offscreen",
+            message: "new peer"
+        });
+
+        if (newPeer != "peer created") {
+            console.error("Peer not created");
+            return "false";
+        };
 
         this._keepAlive();
 
         console.log("Hosted");
-        return peerId;
+        return "true";
     }
 
     private _keepAlive(): void {
-        const intervalId = setInterval( () => {
-            if (this._peerClient != null) {
-                console.log("Keeping alive");
-                chromeAPI.sendMessage("keepAlive");
-            } else {
-                clearInterval(intervalId);
-            };
+        this._keepAliveId = setInterval( () => {
+            console.log("Keeping alive");
+            chromeAPI.sendMessage({
+                target: "offscreen",
+                message: "keep alive"});
         }, 20*1000);
+    }
 
+    private _stopKeepAlive(): void {
+        clearInterval(this._keepAliveId);
     }
 }

@@ -3,6 +3,8 @@ import PeerClient from "./peerClient.js";
 const PEER = PeerClient.getInstance();
 
 chrome.runtime.onMessage.addListener(({ target, message }, sender, sendResponse) => {
+    console.log("Offscreen received: " + message);
+    
     if (target != "offscreen") return; 
 
     messageHandler(message, sender, sendResponse)
@@ -11,6 +13,11 @@ chrome.runtime.onMessage.addListener(({ target, message }, sender, sendResponse)
 });
 
 async function messageHandler(message, sender, sendResponse) {
+    if (message.startsWith("connect")) {
+        const connectId = message.split(" ")[1];
+        return await PEER.connectPeer(connectId);
+    }
+
     switch (message) {
         case "new peer":
             try {
@@ -21,7 +28,7 @@ async function messageHandler(message, sender, sendResponse) {
             }
 
         case "all connections":
-            return PEER.connections;
+            return PEER.getAllConnectionIds();
 
         case "keep alive":
             return "keep alive true";

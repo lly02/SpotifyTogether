@@ -14,5 +14,5 @@ export enum ConnectionType {
 export interface clientSession {
     connectionType: ConnectionType,
     self?: string,
-    peers?: string[]
+    peers?: string
 }

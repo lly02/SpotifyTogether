@@ -29,12 +29,16 @@ export default class PeerClient {
     }
 
     async connectPeer(id) {
-        return new Promise( resolve => {
+        return new Promise( (resolve, error) => {
             this.connections[id] = this.peer.connect(id);
             this.connections[id].on("open", () => {
                 console.log(`Connection established with ${id}.`)
-                resolve(connection);
+                resolve(id);
             });
+            this.connections[id].on("error", e => {
+                console.error(e);
+                error(e);
+            })
         });
     }
 
@@ -52,12 +56,12 @@ export default class PeerClient {
     }
 
     getAllConnectionIds() {
-        let connections = new Array(Object.keys(this.connections).length);
+        let connections = "";
 
         for (const [key, _] of Object.entries(this.connections)) {
-            connections.push(key);
+            connections += key + " ";
         };
-
-        return connections;
+        
+        return connections.slice(0, -1);
     }
 }

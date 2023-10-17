@@ -21,7 +21,7 @@ export default class Client {
         return Client.instance;
     }
 
-    public async host(): Promise<string> {
+    public async host(): Promise<void> {
         console.log("Begin OAuth authorization");
         console.log("Hosting peer connection");
 
@@ -35,14 +35,40 @@ export default class Client {
 
         if (newPeer.startsWith("error")) {
             console.error("Peer not created");
-            return "false";
         };
 
         this._keepAlive();
         this._connectionId = newPeer;
         this._connectionType = ConnectionType.Host;
         console.log("Hosted");
-        return "true";
+    }
+
+    public async join(connectId: string): Promise<void> {
+        console.log("Begin OAuth authorization");
+        console.log("Hosting peer connection");
+
+        const [_, newPeer] = await Promise.all([
+            OAuthAuthorize(),
+            chromeAPI.sendMessage({
+                target: "offscreen",
+                message: "new peer"
+            })
+        ]);
+
+        if (newPeer.startsWith("error")) {
+            console.error("Peer not created");
+        };
+
+        this._keepAlive();
+        this._connectionId = newPeer;
+        
+        await chromeAPI.sendMessage({
+            target: "offscreen",
+            message: `connect ${connectId}`
+        })
+
+        this._connectionType = ConnectionType.Join;
+        console.log(`Joined ${connectId}`);
     }
 
     public async retrieveSession(): Promise<clientSession> {
@@ -54,7 +80,7 @@ export default class Client {
         return {
             connectionType: this._connectionType,
             self: this._connectionId,
-            peers: peers as unknown as string[]
+            peers: peers
         }
     }
 

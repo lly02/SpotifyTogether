@@ -23,13 +23,15 @@ export default class Client {
 
     public async host(): Promise<string> {
         console.log("Begin OAuth authorization");
-        await OAuthAuthorize();
-
         console.log("Hosting peer connection");
-        const newPeer = await chromeAPI.sendMessage({
-            target: "offscreen",
-            message: "new peer"
-        });
+
+        const [_, newPeer] = await Promise.all([
+            OAuthAuthorize(),
+            chromeAPI.sendMessage({
+                target: "offscreen",
+                message: "new peer"
+            })
+        ]);
 
         if (newPeer.startsWith("error")) {
             console.error("Peer not created");
@@ -54,6 +56,15 @@ export default class Client {
             self: this._connectionId,
             peers: peers as unknown as string[]
         }
+    }
+
+    public async disconnect(): Promise<void> {
+        await chromeAPI.sendMessage({
+            target: "offscreen",
+            message: "kill"
+        });
+
+        this._stopKeepAlive();
     }
 
     private _keepAlive(): void {

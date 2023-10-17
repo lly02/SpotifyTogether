@@ -2,27 +2,28 @@ import PeerClient from "./peerClient.js";
 
 const PEER = PeerClient.getInstance();
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(({ target, message }, sender, sendResponse) => {
+    if (target != "offscreen") return; 
+
     messageHandler(message, sender, sendResponse)
         .then(sendResponse);
     return true;
 });
 
-async function messageHandler({ target, message }, sender, sendResponse) {
-    if (target != "offscreen") return "false";
-
+async function messageHandler(message, sender, sendResponse) {
     switch (message) {
         case "new peer":
             try {
-                await PEER.createPeer();
+                return await PEER.createPeer();
             } catch (e) {
                 console.error(e);
                 return "error: " + e;
             }
-            return "peer created";
+
+        case "all connections":
+            return PEER.connections;
+
         case "keep alive":
             return "keep alive true";
-        case "retrieve session":
-            return new XMLSerializer().serializeToString(document.getElementById("main"));
     };
 }

@@ -1,11 +1,17 @@
 import { OAuthAuthorize } from "./api/spotifyAPI.js";
 import * as chromeAPI from "./api/chromeAPI.js";
+import { ConnectionType, type clientSession } from "./types.js";
 
 export default class Client {
     private static instance: Client;
     private _keepAliveId?: number;
+    private _connectionType = ConnectionType.Disconnected;
+    private _connectionId?: string;
     
-    private constructor() {}
+    private constructor() {
+        console.log("Creating offscreen for PeerJS");
+        chromeAPI.createPeerJSOffscreen();
+    }
 
     public static getInstance(): Client {
         if (!Client.instance) {
@@ -16,9 +22,6 @@ export default class Client {
     }
 
     public async host(): Promise<string> {
-        console.log("Creating offscreen for PeerJS");
-        await chromeAPI.createPeerJSOffscreen();
-
         console.log("Begin OAuth authorization");
         await OAuthAuthorize();
 
@@ -28,15 +31,29 @@ export default class Client {
             message: "new peer"
         });
 
-        if (newPeer != "peer created") {
+        if (newPeer.startsWith("error")) {
             console.error("Peer not created");
             return "false";
         };
 
         this._keepAlive();
-
+        this._connectionId = newPeer;
+        this._connectionType = ConnectionType.Host;
         console.log("Hosted");
         return "true";
+    }
+
+    public async retrieveSession(): Promise<clientSession> {
+        const peers = await chromeAPI.sendMessage({
+            target: "offscreen",
+            message: "all connections"
+        });
+
+        return {
+            connectionType: this._connectionType,
+            self: this._connectionId,
+            peers: peers as unknown as string[]
+        }
     }
 
     private _keepAlive(): void {

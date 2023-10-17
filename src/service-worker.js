@@ -3,7 +3,10 @@ import * as chromeAPI from "./scripts/api/chromeAPI.js"
 
 const CLIENT = Client.getInstance();
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(({ target, message }, sender, sendResponse) => {
+    console.log(message)
+    if (target != "service_worker") return;
+
     try {
         messageHandler(message, sender, sendResponse)
             .then(sendResponse);
@@ -13,24 +16,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-async function messageHandler({ target, message }, sender, sendResponse) {
-    if (target != "service_worker") return true;
-
+async function messageHandler(message, sender, sendResponse) {
     switch (message) {
         case "host":
-            return await CLIENT.host();
+            await CLIENT.host();
+            return await CLIENT.retrieveSession();
         case "retrieve session":
-            let mainPage;
-            
-            try {
-                mainPage = await chromeAPI.sendMessage({
-                    target: "offscreen",
-                    message: "retrieve session"
-                });
-            } catch {
-                return "";
-            };
-
-            return mainPage;
+            return await CLIENT.retrieveSession();
     };
 }

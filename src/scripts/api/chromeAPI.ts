@@ -1,3 +1,5 @@
+import type { message } from "../types";
+
 // CHROME.TABS //
 export async function newTab(url: string): Promise<chrome.tabs.Tab> {
     return chrome.tabs.create({
@@ -38,11 +40,6 @@ export async function getLocal(key: string): Promise<{ [key: string]: any }> {
 }
 
 // CHROME.RUNTIME
-export interface message {
-    target: string,
-    message: string
-}
-
 export async function sendMessage(message: message): Promise<any> {
     return chrome.runtime.sendMessage(message);
 }

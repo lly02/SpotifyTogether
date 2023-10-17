@@ -37,4 +37,14 @@ export default class PeerClient {
             });
         });
     }
+
+    getAllConnectionIds() {
+        let connections = new Array(Object.keys(this.connections).length);
+
+        for (const [key, _] of Object.entries(this.connections)) {
+            connections.push(key);
+        };
+
+        return connections;
+    }
 }

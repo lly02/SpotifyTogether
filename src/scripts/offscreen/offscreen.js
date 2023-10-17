@@ -25,5 +25,8 @@ async function messageHandler(message, sender, sendResponse) {
 
         case "keep alive":
             return "keep alive true";
+
+        case "kill":
+            return PEER.kill();
     };
 }

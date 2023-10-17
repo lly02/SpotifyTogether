@@ -4,7 +4,6 @@ import * as chromeAPI from "./scripts/api/chromeAPI.js"
 const CLIENT = Client.getInstance();
 
 chrome.runtime.onMessage.addListener(({ target, message }, sender, sendResponse) => {
-    console.log(message)
     if (target != "service_worker") return;
 
     try {
@@ -21,7 +20,11 @@ async function messageHandler(message, sender, sendResponse) {
         case "host":
             await CLIENT.host();
             return await CLIENT.retrieveSession();
+
         case "retrieve session":
             return await CLIENT.retrieveSession();
+
+        case "disconnect":
+            return await CLIENT.disconnect(); 
     };
 }

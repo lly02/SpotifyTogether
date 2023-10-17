@@ -38,6 +38,19 @@ export default class PeerClient {
         });
     }
 
+    kill() {
+        this.peer.disconnect();
+        
+        this.peer.on("disconnected", () => {
+            this.peer.destroy();
+            
+            this.peer = null;
+            this.id = null;
+            this.connections = {};
+        });
+
+    }
+
     getAllConnectionIds() {
         let connections = new Array(Object.keys(this.connections).length);
 

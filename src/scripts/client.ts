@@ -65,6 +65,7 @@ export default class Client {
         });
 
         this._stopKeepAlive();
+        this._connectionType = ConnectionType.Disconnected;
     }
 
     private _keepAlive(): void {
